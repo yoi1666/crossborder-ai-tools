@@ -3,7 +3,7 @@ from flask_cors import CORS
 import requests
 import os
 
-app = Flask(__name__, static_folder='.', static_url_path='')
+app = Flask(__name__)
 CORS(app)
 
 OPENROUTER_API_KEY = os.environ.get('OPENROUTER_API_KEY')
