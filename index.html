@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>跨境AI助手 - 一键生成产品Listing</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; background: #f5f5f5; }
+        .container { background: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        textarea, input { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 5px; }
+        button { background: #007bff; color: white; padding: 12px 20px; border: none; border-radius: 5px; cursor: pointer; }
+        button:hover { background: #0056b3; }
+        .result { margin-top: 20px; padding: 15px; background: #e9ecef; border-radius: 5px; white-space: pre-wrap; }
+        .loading { display: none; color: #007bff; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>跨境AI助手</h1>
+        <p>输入产品关键词，自动生成Amazon/Shopify标题、五点描述、产品描述</p>
+        
+        <textarea id="keywords" rows="3" placeholder="输入产品关键词，例如：waterproof bluetooth speaker for shower"></textarea>
+        <select id="platform">
+            <option value="amazon">Amazon</option>
+            <option value="shopify">Shopify</option>
+        </select>
+        <button onclick="generateListing()">生成Listing</button>
+        <div class="loading" id="loading">生成中，请稍候...</div>
+        <div id="result" class="result" style="display:none;"></div>
+    </div>
+
+    <script>
+        async function generateListing() {
+            const keywords = document.getElementById('keywords').value;
+            const platform = document.getElementById('platform').value;
+            if (!keywords) {
+                alert('请输入关键词');
+                return;
+            }
+            
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('result').style.display = 'none';
+            
+            try {
+                const response = await fetch('/api/generate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ keywords, platform })
+                });
+                const data = await response.json();
+                document.getElementById('result').textContent = data.content;
+                document.getElementById('result').style.display = 'block';
+            } catch (error) {
+                alert('生成失败：' + error.message);
+            } finally {
+                document.getElementById('loading').style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>
